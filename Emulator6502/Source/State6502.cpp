@@ -68,6 +68,22 @@ bool State6502::ExecuteNext()
         }
         return true;
 
+        case Instruction::kLDA:
+        {
+            u8 operand = Fetch();
+            u8 value = _pMemory[operand];
+            _regA = value;
+            SetZero(_regA == 0);
+        }
+        return true;
+
+        case Instruction::kSTA:
+        {
+            u8 operand = Fetch();
+            _pMemory[operand] = _regA;
+        }
+        return true;
+
         default:
         {
             printf("Unknown opcode %#X\n", opCode);

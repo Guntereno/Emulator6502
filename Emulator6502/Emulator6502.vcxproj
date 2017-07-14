@@ -152,6 +152,7 @@
     <ClInclude Include="Include\Instruction.h" />
     <ClInclude Include="Include\Processor.h" />
     <ClInclude Include="Include\Roms\AccumulatorTest.h" />
+    <ClInclude Include="Include\Roms\RamTest.h" />
     <ClInclude Include="Include\State6502.h" />
     <ClInclude Include="Include\stdafx.h" />
     <ClInclude Include="Include\targetver.h" />

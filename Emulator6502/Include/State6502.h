@@ -53,5 +53,7 @@ private:
     u8 _regA;
     u8 _regX;
     u8 _regY;
+
+    u8 _pMemory[0xFFFF];
 };
 

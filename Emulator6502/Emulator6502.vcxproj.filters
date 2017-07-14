@@ -42,6 +42,9 @@
     <ClInclude Include="Include\Processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Include\Roms\RamTest.h">
+      <Filter>Header Files\Roms</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
