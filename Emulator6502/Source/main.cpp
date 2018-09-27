@@ -1,10 +1,9 @@
-#include "stdafx.h"
-
 #include "Roms\AccumulatorTest.h"
 #include "Roms\RamTest.h"
 
 #include "State6502.h"
 
+#include <cstdio>
 
 int main()
 {

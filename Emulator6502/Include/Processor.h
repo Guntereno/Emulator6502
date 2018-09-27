@@ -1,13 +1,14 @@
 #pragma once
 
-enum ProcessorFlag
-{
-    kFlagCarry = 1 << 0,
-    kFlagZero = 1 << 1,
-    kFlagInterruptDisable = 1 << 2,
-    kFlagDecimalMode = 1 << 3,
-    kFlagBreakCommand = 1 << 4,
-    kFlagOverflow = 1 << 5,
-    kFlagNegative = 1 << 6,
-};
+#include "Types.h"
 
+enum ProcessorFlag : u32
+{
+    Carry = 1 << 0,
+    Zero = 1 << 1,
+    InterruptDisable = 1 << 2,
+    DecimalMode = 1 << 3,
+    BreakCommand = 1 << 4,
+    Overflow = 1 << 5,
+    Negative = 1 << 6,
+};

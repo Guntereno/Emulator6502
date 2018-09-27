@@ -8,7 +8,6 @@
 #define SET_FLAG(flags, flag, value) (flags = value ? (flags | flag) : (flags & flag))
 #define GET_FLAG(flags, flag) ((flags & flag) != 0)
 
-
 class State6502
 {
 public:
@@ -23,37 +22,52 @@ private:
     bool ExecuteNext();
     u8 Fetch();
 
+    void SetFlags(u32 flags, bool value)
+    {
+        if (value)
+        {
+            mFlags = (mFlags | flags);
+        }
+        else
+        {
+            mFlags = (mFlags & flags);
+        }
+    }
 
-    inline void SetCarry(bool value) { SET_FLAG(_flags, kFlagCarry, value); }
-    inline bool GetCarry() { return GET_FLAG(_flags, kFlagCarry); }
+    bool GetFlags(u8 flags)
+    {
+        return (mFlags & flags) != 0;
+    }
 
-    inline void SetZero(bool value) { SET_FLAG(_flags, kFlagZero, value); }
-    inline bool GetZero() { return GET_FLAG(_flags, kFlagZero); }
+    void SetCarry(bool value) { SetFlags(ProcessorFlag::Carry, value); }
+    bool GetCarry() { return GetFlags(ProcessorFlag::Carry); }
 
-    inline void SetInterruptDisable(bool value) { SET_FLAG(_flags, kFlagInterruptDisable, value); }
-    inline bool GetInterruptDisable() { return GET_FLAG(_flags, kFlagInterruptDisable); }
+    void SetZero(bool value) { SetFlags(ProcessorFlag::Zero, value); }
+    bool GetZero() { return GetFlags(ProcessorFlag::Zero); }
 
-    inline void SetDecimalMode(bool value) { SET_FLAG(_flags, kFlagDecimalMode, value); }
-    inline bool GetDecimalMode() { return GET_FLAG(_flags, kFlagDecimalMode); }
+    void SetInterruptDisable(bool value) { SetFlags(ProcessorFlag::InterruptDisable, value); }
+    bool GetInterruptDisable() { GetFlags(ProcessorFlag::InterruptDisable); }
 
-    inline void SetBreakCommand(bool value) { SET_FLAG(_flags, kFlagBreakCommand, value); }
-    inline bool GetBreakCommand() { return GET_FLAG(_flags, kFlagBreakCommand); }
+    void SetDecimalMode(bool value) { SetFlags(ProcessorFlag::DecimalMode, value); }
+    bool GetDecimalMode() { return GetFlags(ProcessorFlag::DecimalMode); }
 
-    inline void SetOverflow(bool value) { SET_FLAG(_flags, kFlagOverflow, value); }
-    inline bool GetOverflow() { return GET_FLAG(_flags, kFlagOverflow); }
+    void SetBreakCommand(bool value) { SetFlags(ProcessorFlag::BreakCommand, value); }
+    bool GetBreakCommand() { return GetFlags(ProcessorFlag::BreakCommand); }
 
-    inline void SetNegative(bool value) { SET_FLAG(_flags, kFlagNegative, value); }
-    inline bool GetNegative() { return GET_FLAG(_flags, kFlagNegative); }
+    void SetOverflow(bool value) { SetFlags(ProcessorFlag::Overflow, value); }
+    bool GetOverflow() { return GetFlags(ProcessorFlag::Overflow); }
 
+    void SetNegative(bool value) { SetFlags(ProcessorFlag::Negative, value); }
+    bool GetNegative() { return GetFlags(ProcessorFlag::Negative); }
 
-    const u8* _pRom;
-    const u8* _pRomEnd;
-    const u8* _pProgramCounter;
-    u8 _flags;
-    u8 _regA;
-    u8 _regX;
-    u8 _regY;
+    const u8* mpRom;
+    const u8* mpRomEnd;
+    const u8* mpProgramCounter;
+    u32 mFlags;
+    u8 mRegA;
+    u8 mRegX;
+    u8 mRegY;
 
-    u8 _pMemory[0xFFFF];
+    u8 mpMemory[0xFFFF];
 };
 

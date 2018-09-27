@@ -1,11 +1,10 @@
 #pragma once
 
-#include "stdafx.h"
-
 #include "State6502.h"
 
 #include "Instruction.h"
 
+#include <cstdio>
 
 State6502::State6502()
 {
@@ -15,27 +14,27 @@ State6502::State6502()
 void State6502::Load(const u8* pRom, size_t romLen)
 {
     Reset();
-    _pRom = pRom;
-    _pRomEnd = _pRom + romLen;
-    _pProgramCounter = _pRom;
+    mpRom = pRom;
+    mpRomEnd = mpRom + romLen;
+    mpProgramCounter = mpRom;
 }
 
 void State6502::Reset()
 {
-    _pRom = NULL;
-    _pProgramCounter = 0;
-    _regA = 0;
+    mpRom = nullptr;
+    mpProgramCounter = 0;
+    mRegA = 0;
 }
 
 void State6502::Run()
 {
-    while (_pProgramCounter < _pRomEnd)
+    while (mpProgramCounter < mpRomEnd)
     {
         bool executed = ExecuteNext();
 
         if (executed)
         {
-            printf("a = %#X, z = %s\n", _regA, (GetZero()) ? "True" : "False");
+            printf("a = %#X, z = %s\n", mRegA, (GetZero()) ? "True" : "False");
         }
     }
 }
@@ -47,40 +46,40 @@ bool State6502::ExecuteNext()
 
     switch (opCode)
     {
-        case Instruction::kADC:
+        case Instruction::ADC:
         {
             u8 operand = Fetch();
-            _regA += operand;
+            mRegA += operand;
         }
         return true;
 
-        case Instruction::kSBC:
+        case Instruction::SBC:
         {
             u8 operand = Fetch();
-            _regA -= operand;
+            mRegA -= operand;
         }
         return true;
 
-        case Instruction::kCMP:
+        case Instruction::CMP:
         {
             u8 operand = Fetch();
-            SetZero(operand == _regA);
+            SetZero(operand == mRegA);
         }
         return true;
 
-        case Instruction::kLDA:
+        case Instruction::LDA:
         {
             u8 operand = Fetch();
-            u8 value = _pMemory[operand];
-            _regA = value;
-            SetZero(_regA == 0);
+            u8 value = mpMemory[operand];
+            mRegA = value;
+            SetZero(mRegA == 0);
         }
         return true;
 
-        case Instruction::kSTA:
+        case Instruction::STA:
         {
             u8 operand = Fetch();
-            _pMemory[operand] = _regA;
+            mpMemory[operand] = mRegA;
         }
         return true;
 
@@ -94,7 +93,7 @@ bool State6502::ExecuteNext()
 
 u8 State6502::Fetch()
 {
-   u8 opCode = *(_pProgramCounter);
-    ++_pProgramCounter;
+    u8 opCode = *(mpProgramCounter);
+    ++mpProgramCounter;
     return opCode;
 }
