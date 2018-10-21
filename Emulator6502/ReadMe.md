@@ -1,4 +1,5 @@
 # Emulator6502
 
-A pet emulator for the 6502 processor. Maybe one day it will be the
-core of a NES emulator.
+This project contains the logic for emulating the MOS 6502 processor.
+
+This code is WIP and not all the system instructions are supported.
