@@ -8,6 +8,8 @@
 #include <assert.h>
 #include <cstdio>
 
+#define NEGATIVE_BIT_SET(value) ((value & (1 << 7)) != 0)
+
 State6502::State6502()
 {
     Reset();
@@ -65,10 +67,18 @@ bool State6502::ExecuteNext()
             u8 operand = Fetch();
             u16 result = static_cast<u16>(mRegA + operand);
             mRegA = static_cast<u8>(result);
-            bool isNegative = ((result & (1 << 7)) != 0);
-            FLAGS_SET_TO(mFlags, StatusFlag::Negative, isNegative);
+            FLAGS_SET_TO(mFlags, StatusFlag::Negative, NEGATIVE_BIT_SET(mRegA));
             FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
             FLAGS_SET_TO(mFlags, StatusFlag::Carry, (result > 255));
+        }
+        return true;
+
+        case Instruction::LDA_IM:
+        {
+            u8 operand = Fetch();
+            mRegA = operand;
+            FLAGS_SET_TO(mFlags, StatusFlag::Negative, NEGATIVE_BIT_SET(mRegA));
+            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
         }
         return true;
 
@@ -83,15 +93,6 @@ bool State6502::ExecuteNext()
         {
             u8 operand = Fetch();
             FLAGS_SET_TO(mFlags, StatusFlag::Zero, (operand == mRegA));
-        }
-        return true;
-
-        case Instruction::LDA:
-        {
-            u8 operand = Fetch();
-            u8 value = mpMemory[operand];
-            mRegA = value;
-            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
         }
         return true;
 

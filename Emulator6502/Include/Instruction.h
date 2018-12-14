@@ -23,8 +23,19 @@ enum class Instruction : u8
     ADC_INX = 0x61,
     ADC_INY = 0x71,
 
+    // Load Accumulator
+    LDA_IM = 0xa9,
+    LDA_ZP = 0xa5,
+    LDA_ZPX = 0xb5,
+    LDA_AB = 0xad,
+    LDA_ABX = 0xbd,
+    LDA_ABY = 0xb9,
+    LDA_INX = 0xa1,
+    LDA_INY = 0xb1,
+
+
     SBC = 0xE9, // Subtract with carry
     CMP = 0xC9, // Compare
     STA = 0x85, // Store Accumulator
-    LDA = 0xA5, // Store Accumulator
+
 };

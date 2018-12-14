@@ -17,7 +17,7 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
 {
     State6502 state;
 
-    constexpr u8 kAdcTestRom[] =
+    constexpr u8 kRom[] =
     {
         0x69, 0x02,  // ADC #$2
         0x69, 0x04,  // ADC #$4
@@ -27,8 +27,8 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
         0x69, 0x01   // ADC #$1
     };
 
-    printf("Accumulator Test\n");
-    state.Load(kAdcTestRom, sizeof(kAdcTestRom));
+    printf("ADC Test\n");
+    state.Load(kRom, sizeof(kRom));
     
     bool shouldContinue = true;
     u8 kExpectedStartFlags = StatusFlag::Unused;
@@ -73,6 +73,56 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
         kExpectedStartFlags | // Initial flags should still be set
         StatusFlag::Carry |   // We overflowed
         StatusFlag::Zero );   // The result was 0
+    ASSERT_EQ(shouldContinue, false);
+}
+
+TEST(InstructionTests, LoadAccumulatorImmediateTest)
+{
+    State6502 state;
+
+    constexpr u8 kRom[] =
+    {
+        0xa9, 0x00, // LDA #$0
+        0xa9, 0x01, // LDA #$1
+        0xa9, 0xff, // LDA #$FF
+        0xa9, 0x00  // LDA #$0
+    };
+
+    printf("LDA Test\n");
+    state.Load(kRom, sizeof(kRom));
+
+    bool shouldContinue = true;
+    u8 kExpectedStartFlags = StatusFlag::Unused;
+    CheckFlags(state.GetFlags(), kExpectedStartFlags);
+
+    // LDA #$0
+    shouldContinue = state.Advance();
+    EXPECT_EQ(state.GetA(), 0x00);
+    CheckFlags(state.GetFlags(),
+        kExpectedStartFlags |
+        StatusFlag::Zero); // A is now 0
+    ASSERT_EQ(shouldContinue, true);
+
+    // LDA #$1
+    shouldContinue = state.Advance();
+    EXPECT_EQ(state.GetA(), 0x01);
+    CheckFlags(state.GetFlags(), kExpectedStartFlags);
+    ASSERT_EQ(shouldContinue, true);
+
+    // LDA #$1
+    shouldContinue = state.Advance();
+    EXPECT_EQ(state.GetA(), 0xff);
+    CheckFlags(state.GetFlags(),
+        kExpectedStartFlags |
+        StatusFlag::Negative); // Sign bit was set
+    ASSERT_EQ(shouldContinue, true);
+
+    // LDA #$0
+    shouldContinue = state.Advance();
+    EXPECT_EQ(state.GetA(), 0x00);
+    CheckFlags(state.GetFlags(),
+        kExpectedStartFlags |
+        StatusFlag::Zero); // A is now 0
     ASSERT_EQ(shouldContinue, false);
 }
 
