@@ -9,8 +9,9 @@ enum StatusFlag : u32
     InterruptDisable = 1 << 2,
     DecimalMode = 1 << 3,
     BreakCommand = 1 << 4,
-    Overflow = 1 << 5,
-    Negative = 1 << 6,
+    Unused = 1 << 5,
+    Overflow = 1 << 6,
+    Negative = 1 << 7,
 };
 
 const char* GetStatusFlagName(StatusFlag flag);

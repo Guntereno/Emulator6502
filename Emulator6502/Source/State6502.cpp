@@ -26,7 +26,9 @@ void State6502::Reset()
     mpRom = nullptr;
     mpProgramCounter = 0;
     mRegA = 0;
-    FLAGS_SET(mFlags, StatusFlag::DecimalMode);
+
+    // This bit is unused, but is expected to always be set
+    mFlags = StatusFlag::Unused;
 }
 
 bool State6502::Advance()
@@ -57,7 +59,9 @@ bool State6502::ExecuteNext()
     {
         case Instruction::ADC_IM:
         {
-            assert(FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
+            // The NES doesn't support arithmetic mode, so I'm not going to
+            assert(!FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
+
             u8 operand = Fetch();
             u16 result = static_cast<u16>(mRegA + operand);
             mRegA = static_cast<u8>(result);

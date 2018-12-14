@@ -27,14 +27,14 @@ private:
     bool ExecuteNext();
     u8 Fetch();
 
-    const u8* mpRom;
-    const u8* mpRomEnd;
-    const u8* mpProgramCounter;
-    u8 mFlags;
-    u8 mRegA;
-    u8 mRegX;
-    u8 mRegY;
-    u8 mStackPointer;
+    const u8* mpRom = 0;
+    const u8* mpRomEnd = 0;
+    const u8* mpProgramCounter = 0;
+    u8 mFlags = StatusFlag::Unused;
+    u8 mRegA = 0;
+    u8 mRegX = 0;
+    u8 mRegY = 0;
+    u8 mStackPointer = 0;
     u8 mpMemory[0xFFFF];
 };
 

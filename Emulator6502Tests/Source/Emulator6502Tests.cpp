@@ -31,7 +31,7 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
     state.Load(kAdcTestRom, sizeof(kAdcTestRom));
     
     bool shouldContinue = true;
-    u8 kExpectedStartFlags = StatusFlag::DecimalMode;
+    u8 kExpectedStartFlags = StatusFlag::Unused;
     CheckFlags(state.GetFlags(), kExpectedStartFlags);
 
     // ADC #$2
