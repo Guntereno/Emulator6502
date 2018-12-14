@@ -3,7 +3,9 @@
 #include "State6502.h"
 
 #include "Instruction.h"
+#include "Flags.h"
 
+#include <assert.h>
 #include <cstdio>
 
 State6502::State6502()
@@ -24,19 +26,26 @@ void State6502::Reset()
     mpRom = nullptr;
     mpProgramCounter = 0;
     mRegA = 0;
+    FLAGS_SET(mFlags, StatusFlag::DecimalMode);
 }
 
-void State6502::Run()
+bool State6502::Advance()
 {
-    while (mpProgramCounter < mpRomEnd)
-    {
-        bool executed = ExecuteNext();
+    bool shouldContinue = true;
 
-        if (executed)
-        {
-            printf("a = %#X, z = %s\n", mRegA, (GetZero()) ? "True" : "False");
-        }
+    if (mpRom == nullptr)
+        return false;
+
+    if (mpProgramCounter < mpRomEnd)
+    {
+        shouldContinue = ExecuteNext();
     }
+    else
+    {
+        return false;
+    }
+
+    return shouldContinue && (mpProgramCounter < mpRomEnd);
 }
 
 // Returns whether execution should continue
@@ -46,10 +55,16 @@ bool State6502::ExecuteNext()
 
     switch (opCode)
     {
-        case Instruction::ADC:
+        case Instruction::ADC_IM:
         {
+            assert(FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
             u8 operand = Fetch();
-            mRegA += operand;
+            u16 result = static_cast<u16>(mRegA + operand);
+            mRegA = static_cast<u8>(result);
+            bool isNegative = ((result & (1 << 7)) != 0);
+            FLAGS_SET_TO(mFlags, StatusFlag::Negative, isNegative);
+            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
+            FLAGS_SET_TO(mFlags, StatusFlag::Carry, (result > 255));
         }
         return true;
 
@@ -63,7 +78,7 @@ bool State6502::ExecuteNext()
         case Instruction::CMP:
         {
             u8 operand = Fetch();
-            SetZero(operand == mRegA);
+            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (operand == mRegA));
         }
         return true;
 
@@ -72,7 +87,7 @@ bool State6502::ExecuteNext()
             u8 operand = Fetch();
             u8 value = mpMemory[operand];
             mRegA = value;
-            SetZero(mRegA == 0);
+            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
         }
         return true;
 

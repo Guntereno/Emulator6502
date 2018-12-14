@@ -1,1 +1,3 @@
- Project for building the GTest framework
+# GTest
+
+Project for building the GTest unit testing framework

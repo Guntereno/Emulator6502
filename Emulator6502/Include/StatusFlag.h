@@ -2,7 +2,7 @@
 
 #include "Types.h"
 
-enum ProcessorFlag : u32
+enum StatusFlag : u32
 {
     Carry = 1 << 0,
     Zero = 1 << 1,
@@ -12,3 +12,5 @@ enum ProcessorFlag : u32
     Overflow = 1 << 5,
     Negative = 1 << 6,
 };
+
+const char* GetStatusFlagName(StatusFlag flag);

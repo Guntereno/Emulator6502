@@ -13,17 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Roms">
-      <UniqueIdentifier>{e578721b-5b76-4a96-9ed3-d4eaff0b0ec7}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.md" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Include\Roms\AccumulatorTest.h">
-      <Filter>Header Files\Roms</Filter>
-    </ClInclude>
     <ClInclude Include="Include\State6502.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,18 +27,18 @@
     <ClInclude Include="Include\Instruction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Processor.h">
+    <ClInclude Include="Include\Flags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Include\Roms\RamTest.h">
-      <Filter>Header Files\Roms</Filter>
+    <ClInclude Include="Include\StatusFlag.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\main.cpp">
+    <ClCompile Include="Source\State6502.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Source\State6502.cpp">
+    <ClCompile Include="Source\StatusFlag.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
