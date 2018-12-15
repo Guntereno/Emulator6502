@@ -27,6 +27,9 @@ private:
     bool ExecuteNext();
     u8 Fetch();
 
+    void Adc(u8 operand);
+    void Sbc(u8 operand);
+
     const u8* mpRom = 0;
     const u8* mpRomEnd = 0;
     const u8* mpProgramCounter = 0;

@@ -52,6 +52,25 @@ bool State6502::Advance()
     return shouldContinue && (mpProgramCounter < mpRomEnd);
 }
 
+void State6502::Adc(u8 operand)
+{
+    u16 result = static_cast<u16>(mRegA + operand);
+    if (FLAGS_CHECK_ALL(mFlags, StatusFlag::Carry))
+    {
+        ++result;
+    }
+    mRegA = static_cast<u8>(result);
+
+    FLAGS_SET_TO(mFlags, StatusFlag::Carry, (result > 0xFF));
+    FLAGS_SET_TO(mFlags, StatusFlag::Negative, NEGATIVE_BIT_SET(mRegA));
+    FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
+}
+
+void State6502::Sbc(u8 operand)
+{
+    Adc(static_cast<u8>(operand ^ 0xff));
+}
+
 // Returns whether execution should continue
 bool State6502::ExecuteNext()
 {
@@ -61,15 +80,15 @@ bool State6502::ExecuteNext()
     {
         case Instruction::ADC_IM:
         {
-            // The NES doesn't support arithmetic mode, so I'm not going to
-            assert(!FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
-
             u8 operand = Fetch();
-            u16 result = static_cast<u16>(mRegA + operand);
-            mRegA = static_cast<u8>(result);
-            FLAGS_SET_TO(mFlags, StatusFlag::Negative, NEGATIVE_BIT_SET(mRegA));
-            FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
-            FLAGS_SET_TO(mFlags, StatusFlag::Carry, (result > 255));
+            Adc(operand);
+        }
+        return true;
+
+        case Instruction::SBC_IM:
+        {
+            u8 operand = Fetch();
+            Sbc(operand);
         }
         return true;
 
@@ -82,10 +101,47 @@ bool State6502::ExecuteNext()
         }
         return true;
 
-        case Instruction::SBC:
+        case Instruction::SEC:
         {
-            u8 operand = Fetch();
-            mRegA -= operand;
+            FLAGS_SET(mFlags, StatusFlag::Carry);
+        }
+        return true;
+
+        case Instruction::SED:
+        {
+            // The NES doesn't support arithmetic mode, so I'm not going to
+            assert(!FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
+            FLAGS_SET(mFlags, StatusFlag::DecimalMode);
+        }
+        return true;
+
+        case Instruction::SEI:
+        {
+            FLAGS_SET(mFlags, StatusFlag::InterruptDisable);
+        }
+        return true;
+
+        case Instruction::CLC:
+        {
+            FLAGS_UNSET(mFlags, StatusFlag::Carry);
+        }
+        return true;
+
+        case Instruction::CLD:
+        {
+            FLAGS_UNSET(mFlags, StatusFlag::DecimalMode);
+        }
+        return true;
+
+        case Instruction::CLI:
+        {
+            FLAGS_UNSET(mFlags, StatusFlag::InterruptDisable);
+        }
+        return true;
+
+        case Instruction::CLV:
+        {
+            FLAGS_UNSET(mFlags, StatusFlag::Overflow);
         }
         return true;
 
