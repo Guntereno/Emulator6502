@@ -1,7 +1,7 @@
 #pragma once
 
 // Note: The following suffixes refer to the address mode:
-// 
+//
 // - IM = Immediate
 // - ZP = Zero Page
 // - ZPX = Zero Page,X
@@ -55,5 +55,4 @@ enum class Instruction : u8
 
     CMP = 0xc9, // Compare
     STA = 0x85, // Store Accumulator
-
 };

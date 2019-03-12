@@ -14,7 +14,7 @@ public:
 
     void Load(const u8* pRom, size_t romLen);
 
-    // Retuns false when loaded program ends
+    // Returns false when loaded program ends
     bool Advance();
 
     u8 GetFlags() { return mFlags; }
@@ -33,6 +33,7 @@ private:
     const u8* mpRom = 0;
     const u8* mpRomEnd = 0;
     const u8* mpProgramCounter = 0;
+
     u8 mFlags = StatusFlag::Unused;
     u8 mRegA = 0;
     u8 mRegX = 0;
@@ -40,4 +41,3 @@ private:
     u8 mStackPointer = 0;
     u8 mpMemory[0xFFFF];
 };
-

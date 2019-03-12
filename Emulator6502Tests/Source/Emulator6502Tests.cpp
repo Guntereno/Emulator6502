@@ -1,25 +1,26 @@
 #include "gtest/gtest.h"
 
-#include "State6502.h"
 #include "Instruction.h"
+#include "State6502.h"
 
 void CheckFlags(u8 flags, u8 expected)
 {
     for (int i = 0; i < 8; ++i)
     {
         u8 bit = (1 << i);
-        EXPECT_EQ(flags & bit, expected & bit) <<
-            "Flag '" << GetStatusFlagName(static_cast<StatusFlag>(bit)) << "' differs!";
+        EXPECT_EQ(flags & bit, expected & bit)
+            << "Flag '" << GetStatusFlagName(static_cast<StatusFlag>(bit)) << "' differs!";
     }
 }
 
-#define STEP_CHECK_A(expectA, expectFlags, expectContinue) \
-do { \
-    shouldContinue = state.Advance(); \
-    EXPECT_EQ(state.GetA(), expectA); \
-    CheckFlags(state.GetFlags(), expectFlags); \
-    ASSERT_EQ(shouldContinue, expectContinue); \
-} while(0)
+#define STEP_CHECK_A(expectA, expectFlags, expectContinue)                                         \
+    do                                                                                             \
+    {                                                                                              \
+        shouldContinue = state.Advance();                                                          \
+        EXPECT_EQ(state.GetA(), expectA);                                                          \
+        CheckFlags(state.GetFlags(), expectFlags);                                                 \
+        ASSERT_EQ(shouldContinue, expectContinue);                                                 \
+    } while (0)
 
 constexpr u8 kExpectedStartFlags = StatusFlag::Unused;
 
@@ -28,14 +29,13 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
 {
     State6502 state;
 
-    constexpr u8 kRom[] =
-    {
-        0x69, 0x02,  // ADC #$2
-        0x69, 0x04,  // ADC #$4
-        0x69, 0x08,  // ADC #$8
-        0x69, 0x02,  // ADC #$2
-        0x69, 0xef,  // ADC #$ef
-        0x69, 0x01   // ADC #$1
+    constexpr u8 kRom[] = {
+        0x69, 0x02, // ADC #$2
+        0x69, 0x04, // ADC #$4
+        0x69, 0x08, // ADC #$8
+        0x69, 0x02, // ADC #$2
+        0x69, 0xef, // ADC #$ef
+        0x69, 0x01  // ADC #$1
     };
 
     state.Load(kRom, sizeof(kRom));
@@ -54,7 +54,7 @@ TEST(InstructionTests, AddWithCarryImmediateTest)
 
     // ADC #$2
     STEP_CHECK_A(0x10, kExpectedStartFlags, true);
-    
+
     // ADC #$ef : Should set negative flag as bit 7 of 0xff is set
     STEP_CHECK_A(0xff, (kExpectedStartFlags | StatusFlag::Negative), true);
 
@@ -66,8 +66,7 @@ TEST(InstructionTests, AddWithCarryCarryFlagTest)
 {
     State6502 state;
 
-    constexpr u8 kRom[] =
-    {
+    constexpr u8 kRom[] = {
         0xa9, 0x10, // LDA #$10
         0x69, 0x10, // ADC #$10
         0xa9, 0x10, // LDA #$10
@@ -100,8 +99,7 @@ TEST(InstructionTests, LoadAccumulatorImmediateTest)
 {
     State6502 state;
 
-    constexpr u8 kRom[] =
-    {
+    constexpr u8 kRom[] = {
         0xa9, 0x00, // LDA #$00
         0xa9, 0x01, // LDA #$01
         0xa9, 0xff, // LDA #$FF
@@ -130,8 +128,7 @@ TEST(InstructionTests, SubtractWithCarryImmediateTest)
 {
     State6502 state;
 
-    constexpr u8 kRom[] =
-    {
+    constexpr u8 kRom[] = {
         0xa9, 0x08, // LDA #8
         0xe9, 0x04, // SBC #4
         0xa9, 0x08, // LDA #$8
@@ -168,8 +165,7 @@ TEST(InstructionTests, StatusFlagsTest)
 {
     State6502 state;
 
-    constexpr u8 kRom[] =
-    {
+    constexpr u8 kRom[] = {
         0x38, // SEC
         0xF8, // SED
         0x78, // SEI
@@ -206,7 +202,7 @@ TEST(InstructionTests, StatusFlagsTest)
     STEP_CHECK_A(0x00, (expectedFlags &= ~StatusFlag::Carry), false);
 }
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

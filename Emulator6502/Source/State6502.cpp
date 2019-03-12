@@ -2,8 +2,8 @@
 
 #include "State6502.h"
 
-#include "Instruction.h"
 #include "Flags.h"
+#include "Instruction.h"
 
 #include <assert.h>
 #include <cstdio>
@@ -82,15 +82,15 @@ bool State6502::ExecuteNext()
         {
             u8 operand = Fetch();
             Adc(operand);
+            return true;
         }
-        return true;
 
         case Instruction::SBC_IM:
         {
             u8 operand = Fetch();
             Sbc(operand);
+            return true;
         }
-        return true;
 
         case Instruction::LDA_IM:
         {
@@ -98,72 +98,73 @@ bool State6502::ExecuteNext()
             mRegA = operand;
             FLAGS_SET_TO(mFlags, StatusFlag::Negative, NEGATIVE_BIT_SET(mRegA));
             FLAGS_SET_TO(mFlags, StatusFlag::Zero, (mRegA == 0));
+            return true;
         }
-        return true;
+
 
         case Instruction::SEC:
         {
             FLAGS_SET(mFlags, StatusFlag::Carry);
+            return true;
         }
-        return true;
 
         case Instruction::SED:
         {
             // The NES doesn't support arithmetic mode, so I'm not going to
             assert(!FLAGS_CHECK_ALL(mFlags, StatusFlag::DecimalMode));
             FLAGS_SET(mFlags, StatusFlag::DecimalMode);
+            return true;
         }
-        return true;
 
         case Instruction::SEI:
         {
             FLAGS_SET(mFlags, StatusFlag::InterruptDisable);
+            return true;
         }
-        return true;
 
         case Instruction::CLC:
         {
             FLAGS_UNSET(mFlags, StatusFlag::Carry);
+            return true;
         }
-        return true;
 
         case Instruction::CLD:
         {
             FLAGS_UNSET(mFlags, StatusFlag::DecimalMode);
+            return true;
         }
-        return true;
 
         case Instruction::CLI:
         {
             FLAGS_UNSET(mFlags, StatusFlag::InterruptDisable);
+            return true;
         }
-        return true;
 
         case Instruction::CLV:
         {
             FLAGS_UNSET(mFlags, StatusFlag::Overflow);
+            return true;
         }
-        return true;
 
         case Instruction::CMP:
         {
             u8 operand = Fetch();
             FLAGS_SET_TO(mFlags, StatusFlag::Zero, (operand == mRegA));
+            return true;
         }
-        return true;
 
         case Instruction::STA:
         {
             u8 operand = Fetch();
             mpMemory[operand] = mRegA;
+            return true;
         }
-        return true;
 
         default:
         {
             printf("Unknown opcode %#X\n", opCode);
+            return false;
         }
-        return false;
     }
 }
 

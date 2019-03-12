@@ -26,4 +26,3 @@ static_assert(sizeof(f32) == 4, "f32 has invalid length!");
 static_assert(sizeof(s64) == 8, "s64 has invalid length!");
 static_assert(sizeof(u64) == 8, "u64 has invalid length!");
 static_assert(sizeof(f64) == 8, "f64 has invalid length!");
-
