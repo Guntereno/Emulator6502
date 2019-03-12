@@ -1,4 +1,3 @@
-# We'll use defaults from the Google style, but with 4 columns indentation.
 #BasedOnStyle: Google
 AccessModifierOffset: -4
 AlignAfterOpenBracket: false
